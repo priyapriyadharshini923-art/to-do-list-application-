@@ -1,0 +1,882 @@
+<!DOCTYPE html> 
+<html lang=”en”> 
+<head> 
+    <meta charset=”UTF-8”> 
+    <meta name=”viewport” content=”width=device-width, initial-scale=1.0”> 
+    <title>TaskFlow – Task Management App</title> 
+    <link rel=”stylesheet” href=https://cdnjs.cloudflare.com/ajax/libs/font
+awesome/6.4.0/css/all.min.css> 
+    <style> 
+• { 
+            Margin: 0; 
+            Padding: 0; 
+            Box-sizing: border-box; 
+            Font-family: ‘Segoe UI’, Tahoma, Geneva, Verdana, sans-serif; 
+        } 
+         
+        Body { 
+            Background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); 
+            Min-height: 100vh; 
+            Display: flex; 
+            Justify-content: center; 
+            Align-items: center; 
+            Padding: 20px; 
+        } 
+         
+ 
+ 
+        .app-container { 
+            Width: 100%; 
+            Max-width: 400px; 
+            Height: 700px; 
+            Background-color: white; 
+            Border-radius: 20px; 
+            Overflow: hidden; 
+            Box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); 
+            Position: relative; 
+        } 
+         
+        .screen { 
+            Width: 100%; 
+            Height: 100%; 
+            Padding: 20px; 
+            Display: none; 
+            Flex-direction: column; 
+            Overflow-y: auto; 
+        } 
+         
+        .active { 
+            Display: flex; 
+        } 
+         
+        /* Header Styles */ 
+        .header { 
+ 
+ 
+            Display: flex; 
+            Justify-content: space-between; 
+            Align-items: center; 
+            Padding: 15px 0; 
+            Margin-bottom: 20px; 
+            Border-bottom: 1px solid #eee; 
+        } 
+         
+        .header h1 { 
+            Font-size: 24px; 
+            Color: #333; 
+        } 
+         
+        .user-avatar { 
+            Width: 40px; 
+            Height: 40px; 
+            Border-radius: 50%; 
+            Background-color: #6a11cb; 
+            Display: flex; 
+            Align-items: center; 
+            Justify-content: center; 
+            Color: white; 
+            Font-weight: bold; 
+        } 
+         
+        /* Login Screen */ 
+ 
+ 
+        .login-container { 
+            Display: flex; 
+            Flex-direction: column; 
+            Justify-content: center; 
+            Align-items: center; 
+            Height: 100%; 
+        } 
+         
+        .app-logo { 
+            Font-size: 48px; 
+            Color: #6a11cb; 
+            Margin-bottom: 20px; 
+        } 
+         
+        .app-title { 
+            Font-size: 32px; 
+            Color: #333; 
+            Margin-bottom: 40px; 
+            Font-weight: 700; 
+        } 
+         
+        .login-form { 
+            Width: 100%; 
+        } 
+         
+        .form-group { 
+ 
+ 
+            Margin-bottom: 20px; 
+        } 
+         
+        .form-group label { 
+            Display: block; 
+            Margin-bottom: 8px; 
+            Color: #555; 
+            Font-weight: 500; 
+        } 
+         
+        .form-group input { 
+            Width: 100%; 
+            Padding: 12px 15px; 
+            Border: 1px solid #ddd; 
+            Border-radius: 8px; 
+            Font-size: 16px; 
+        } 
+         
+        .login-btn { 
+            Width: 100%; 
+            Padding: 14px; 
+            Background: linear-gradient(to right, #6a11cb, #2575fc); 
+            Color: white; 
+            Border: none; 
+            Border-radius: 8px; 
+            Font-size: 16px; 
+ 
+ 
+            Font-weight: 600; 
+            Cursor: pointer; 
+            Margin-top: 10px; 
+        } 
+         
+        .signup-link { 
+            Text-align: center; 
+            Margin-top: 20px; 
+            Color: #666; 
+        } 
+         
+        .signup-link a { 
+            Color: #2575fc; 
+            Text-decoration: none; 
+        } 
+         
+        /* Dashboard */ 
+        .dashboard-stats { 
+            Display: grid; 
+            Grid-template-columns: 1fr 1fr; 
+            Gap: 15px; 
+            Margin-bottom: 25px; 
+        } 
+         
+        .stat-card { 
+            Background: linear-gradient(to right, #6a11cb, #2575fc); 
+ 
+ 
+            Color: white; 
+            Padding: 15px; 
+            Border-radius: 10px; 
+            Text-align: center; 
+        } 
+         
+        .stat-card h3 { 
+            Font-size: 14px; 
+            Margin-bottom: 5px; 
+            Opacity: 0.9; 
+        } 
+         
+        .stat-card .number { 
+            Font-size: 24px; 
+            Font-weight: 700; 
+        } 
+         
+        .section-title { 
+            Font-size: 18px; 
+            Margin: 20px 0 15px; 
+            Color: #333; 
+        } 
+         
+        .task-list { 
+            Display: flex; 
+            Flex-direction: column; 
+ 
+ 
+            Gap: 10px; 
+        } 
+         
+        .task-item { 
+            Padding: 15px; 
+            Border-radius: 10px; 
+            Background-color: #f8f9fa; 
+            Border-left: 4px solid #6a11cb; 
+        } 
+         
+        .task-item.completed { 
+            Border-left-color: #28a745; 
+            Opacity: 0.7; 
+        } 
+         
+        .task-item.upcoming { 
+            Border-left-color: #ffc107; 
+        } 
+         
+        .task-title { 
+            Font-weight: 600; 
+            Margin-bottom: 5px; 
+        } 
+         
+        .task-meta { 
+            Display: flex; 
+ 
+ 
+            Justify-content: space-between; 
+            Font-size: 12px; 
+            Color: #666; 
+        } 
+         
+        .priority { 
+            Padding: 2px 8px; 
+            Border-radius: 10px; 
+            Font-size: 10px; 
+            Font-weight: 600; 
+        } 
+         
+        .priority.high { 
+            Background-color: #ff6b6b; 
+            Color: white; 
+        } 
+         
+        .priority.medium { 
+            Background-color: #ffd166; 
+            Color: #333; 
+        } 
+         
+        .priority.low { 
+            Background-color: #06d6a0; 
+            Color: white; 
+        } 
+ 
+ 
+         
+        /* Task Creation */ 
+        .task-form { 
+            Display: flex; 
+            Flex-direction: column; 
+            Gap: 15px; 
+        } 
+         
+        .form-row { 
+            Display: flex; 
+            Gap: 15px; 
+        } 
+         
+        .form-row .form-group { 
+            Flex: 1; 
+            Margin-bottom: 0; 
+        } 
+         
+        .category-tags { 
+            Display: flex; 
+            Flex-wrap: wrap; 
+            Gap: 10px; 
+            Margin-top: 10px; 
+        } 
+         
+        .category-tag { 
+ 
+ 
+            Padding: 5px 10px; 
+            Background-color: #e9ecef; 
+            Border-radius: 15px; 
+            Font-size: 12px; 
+            Cursor: pointer; 
+        } 
+         
+        .category-tag.selected { 
+            Background-color: #6a11cb; 
+            Color: white; 
+        } 
+         
+        .priority-selectors { 
+            Display: flex; 
+            Gap: 10px; 
+            Margin-top: 10px; 
+        } 
+         
+        .priority-selector { 
+            Flex: 1; 
+            Text-align: center; 
+            Padding: 8px; 
+            Border-radius: 8px; 
+            Cursor: pointer; 
+            Border: 1px solid #ddd; 
+        } 
+ 
+ 
+         
+        .priority-selector.selected { 
+            Border-color: #6a11cb; 
+            Background-color: rgba(106, 17, 203, 0.1); 
+        } 
+         
+        .create-task-btn { 
+            Margin-top: 20px; 
+            Padding: 14px; 
+            Background: linear-gradient(to right, #6a11cb, #2575fc); 
+            Color: white; 
+            Border: none; 
+            Border-radius: 8px; 
+            Font-size: 16px; 
+            Font-weight: 600; 
+            Cursor: pointer; 
+        } 
+         
+        /* Task List */ 
+        .search-bar { 
+            Display: flex; 
+            Margin-bottom: 20px; 
+        } 
+         
+        .search-bar input { 
+            Flex: 1; 
+ 
+ 
+            Padding: 12px 15px; 
+            Border: 1px solid #ddd; 
+            Border-radius: 8px 0 0 8px; 
+            Font-size: 16px; 
+        } 
+         
+        .search-bar button { 
+            Padding: 0 15px; 
+            Background: #6a11cb; 
+            Color: white; 
+            Border: none; 
+            Border-radius: 0 8px 8px 0; 
+            Cursor: pointer; 
+        } 
+         
+        .filter-options { 
+            Display: flex; 
+            Gap: 10px; 
+            Margin-bottom: 20px; 
+            Overflow-x: auto; 
+            Padding-bottom: 5px; 
+        } 
+         
+        .filter-option { 
+            Padding: 8px 15px; 
+            Background-color: #f8f9fa; 
+ 
+ 
+            Border-radius: 20px; 
+            Font-size: 14px; 
+            White-space: nowrap; 
+            Cursor: pointer; 
+        } 
+         
+        .filter-option.active { 
+            Background-color: #6a11cb; 
+            Color: white; 
+        } 
+         
+        /* Notification */ 
+        .notification { 
+            Position: absolute; 
+            Top: 20px; 
+            Right: 20px; 
+            Background-color: white; 
+            Border-radius: 10px; 
+            Padding: 15px; 
+            Box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+            Display: flex; 
+            Align-items: center; 
+            Gap: 15px; 
+            z-index: 100; 
+            max-width: 300px; 
+            display: none; 
+ 
+ 
+        } 
+         
+        .notification-icon { 
+            Width: 40px; 
+            Height: 40px; 
+            Border-radius: 50%; 
+            Background-color: #6a11cb; 
+            Display: flex; 
+            Align-items: center; 
+            Justify-content: center; 
+            Color: white; 
+        } 
+         
+        .notification-content h4 { 
+            Margin-bottom: 5px; 
+            Color: #333; 
+        } 
+         
+        .notification-content p { 
+            Color: #666; 
+            Font-size: 14px; 
+        } 
+         
+        /* Navigation */ 
+        .nav-bar { 
+            Position: absolute; 
+ 
+ 
+            Bottom: 0; 
+            Left: 0; 
+            Width: 100%; 
+            Background-color: white; 
+            Display: flex; 
+            Justify-content: space-around; 
+            Padding: 15px 0; 
+            Border-top: 1px solid #eee; 
+        } 
+         
+        .nav-item { 
+            Display: flex; 
+            Flex-direction: column; 
+            Align-items: center; 
+            Color: #666; 
+            Cursor: pointer; 
+        } 
+         
+        .nav-item.active { 
+            Color: #6a11cb; 
+        } 
+         
+        .nav-item I { 
+            Font-size: 20px; 
+            Margin-bottom: 5px; 
+        } 
+ 
+ 
+         
+        .nav-item span { 
+            Font-size: 12px; 
+        } 
+         
+        /* Deployed App */ 
+        .deployed-container { 
+            Display: flex; 
+            Flex-direction: column; 
+            Align-items: center; 
+            Justify-content: center; 
+            Height: 100%; 
+            Text-align: center; 
+        } 
+         
+        .deployed-icon { 
+            Font-size: 80px; 
+            Color: #6a11cb; 
+            Margin-bottom: 20px; 
+        } 
+         
+        .deployed-title { 
+            Font-size: 28px; 
+            Margin-bottom: 10px; 
+            Color: #333; 
+        } 
+ 
+ 
+         
+        .deployed-subtitle { 
+            Color: #666; 
+            Margin-bottom: 30px; 
+        } 
+         
+        .store-badges { 
+            Display: flex; 
+            Gap: 15px; 
+            Margin-top: 30px; 
+        } 
+         
+        .store-badge { 
+            Width: 120px; 
+            Height: 40px; 
+            Background-color: #333; 
+            Border-radius: 8px; 
+            Display: flex; 
+            Align-items: center; 
+            Justify-content: center; 
+            Color: white; 
+            Font-weight: 600; 
+        } 
+    </style> 
+</head> 
+<body> 
+ 
+ 
+    <div class=”app-container”> 
+        <!—Login Screen → 
+        <div class=”screen active” id=”login-screen”> 
+            <div class=”login-container”> 
+                <div class=”app-logo”> 
+                    <I class=”fas fa-tasks”></i> 
+                </div> 
+                <h1 class=”app-title”>TaskFlow</h1> 
+                <div class=”login-form”> 
+                    <div class=”form-group”> 
+                        <label for=”email”>Email</label> 
+                        <input type=”email” id=”email” placeholder=”Enter your email”> 
+                    </div> 
+                    <div class=”form-group”> 
+                        <label for=”password”>Password</label> 
+                        <input type=”password” id=”password” placeholder=”Enter your password”> 
+                    </div> 
+                    <button class=”login-btn” id=”login-btn”>Login</button> 
+                    <div class=”signup-link”> 
+                        Don’t have an account? <a href=”#”>Sign up</a> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+         
+        <!—Dashboard Screen → 
+ 
+ 
+        <div class=”screen” id=”dashboard-screen”> 
+            <div class=”header”> 
+                <h1>Dashboard</h1> 
+                <div class=”user-avatar”>JD</div> 
+            </div> 
+             
+            <div class=”dashboard-stats”> 
+                <div class=”stat-card”> 
+                    <h3>Today’s Tasks</h3> 
+                    <div class=”number”>5</div> 
+                </div> 
+                <div class=”stat-card”> 
+                    <h3>Completed</h3> 
+                    <div class=”number”>12</div> 
+                </div> 
+                <div class=”stat-card”> 
+                    <h3>Upcoming</h3> 
+                    <div class=”number”>8</div> 
+                </div> 
+                <div class=”stat-card”> 
+                    <h3>Overdue</h3> 
+                    <div class=”number”>2</div> 
+                </div> 
+            </div> 
+             
+            <h2 class=”section-title”>Today’s Tasks</h2> 
+ 
+ 
+            <div class=”task-list”> 
+                <div class=”task-item”> 
+                    <div class=”task-title”>Design meeting with team</div> 
+                    <div class=”task-meta”> 
+                        <span>10:00 AM</span> 
+                        <span class=”priority high”>High</span> 
+                    </div> 
+                </div> 
+                <div class=”task-item”> 
+                    <div class=”task-title”>Complete project proposal</div> 
+                    <div class=”task-meta”> 
+                        <span>02:00 PM</span> 
+                        <span class=”priority medium”>Medium</span> 
+                    </div> 
+                </div> 
+                <div class=”task-item completed”> 
+                    <div class=”task-title”>Morning exercise</div> 
+                    <div class=”task-meta”> 
+                        <span>Completed</span> 
+                        <span class=”priority low”>Low</span> 
+                    </div> 
+                </div> 
+            </div> 
+             
+            <h2 class=”section-title”>Upcoming Tasks</h2> 
+            <div class=”task-list”> 
+ 
+ 
+                <div class=”task-item upcoming”> 
+                    <div class=”task-title”>Client presentation</div> 
+                    <div class=”task-meta”> 
+                        <span>Tomorrow, 11:00 AM</span> 
+                        <span class=”priority high”>High</span> 
+                    </div> 
+                </div> 
+                <div class=”task-item upcoming”> 
+                    <div class=”task-title”>Team lunch</div> 
+                    <div class=”task-meta”> 
+                        <span>Friday, 01:00 PM</span> 
+                        <span class=”priority low”>Low</span> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+         
+        <!—Task Creation Screen → 
+        <div class=”screen” id=”create-task-screen”> 
+            <div class=”header”> 
+                <h1>Create Task</h1> 
+                <div class=”user-avatar”>JD</div> 
+            </div> 
+             
+            <div class=”task-form”> 
+                <div class=”form-group”> 
+ 
+ 
+                    <label for=”task-title”>Task Title</label> 
+                    <input type=”text” id=”task-title” placeholder=”Enter task title”> 
+                </div> 
+                 
+                <div class=”form-group”> 
+                    <label for=”task-description”>Description</label> 
+                    <input type=”text” id=”task-description” placeholder=”Enter task description”> 
+                </div> 
+                 
+                <div class=”form-row”> 
+                    <div class=”form-group”> 
+                        <label for=”task-date”>Due Date</label> 
+                        <input type=”date” id=”task-date”> 
+                    </div> 
+                    <div class=”form-group”> 
+                        <label for=”task-time”>Due Time</label> 
+                        <input type=”time” id=”task-time”> 
+                    </div> 
+                </div> 
+                 
+                <div class=”form-group”> 
+                    <label>Category</label> 
+                    <div class=”category-tags”> 
+                        <div class=”category-tag selected”>Work</div> 
+                        <div class=”category-tag”>Personal</div> 
+                        <div class=”category-tag”>Health</div> 
+ 
+ 
+                        <div class=”category-tag”>Shopping</div> 
+                        <div class=”category-tag”>Other</div> 
+                    </div> 
+                </div> 
+                 
+                <div class=”form-group”> 
+                    <label>Priority</label> 
+                    <div class=”priority-selectors”> 
+                        <div class=”priority-selector selected”>Low</div> 
+                        <div class=”priority-selector”>Medium</div> 
+                        <div class=”priority-selector”>High</div> 
+                    </div> 
+                </div> 
+                 
+                <button class=”create-task-btn”>Create Task</button> 
+            </div> 
+        </div> 
+         
+        <!—Task List Screen → 
+        <div class=”screen” id=”task-list-screen”> 
+            <div class=”header”> 
+                <h1>My Tasks</h1> 
+                <div class=”user-avatar”>JD</div> 
+            </div> 
+             
+            <div class=”search-bar”> 
+ 
+ 
+                <input type=”text” placeholder=”Search tasks…”> 
+                <button><I class=”fas fa-search”></i></button> 
+            </div> 
+             
+            <div class=”filter-options”> 
+                <div class=”filter-option active”>All</div> 
+                <div class=”filter-option”>Today</div> 
+                <div class=”filter-option”>Upcoming</div> 
+                <div class=”filter-option”>Completed</div> 
+                <div class=”filter-option”>Work</div> 
+                <div class=”filter-option”>Personal</div> 
+            </div> 
+             
+            <div class=”task-list”> 
+                <div class=”task-item”> 
+                    <div class=”task-title”>Design meeting with team</div> 
+                    <div class=”task-meta”> 
+                        <span>Today, 10:00 AM</span> 
+                        <span class=”priority high”>High</span> 
+                    </div> 
+                </div> 
+                <div class=”task-item”> 
+                    <div class=”task-title”>Complete project proposal</div> 
+                    <div class=”task-meta”> 
+                        <span>Today, 02:00 PM</span> 
+                        <span class=”priority medium”>Medium</span> 
+ 
+ 
+                    </div> 
+                </div> 
+                <div class=”task-item upcoming”> 
+                    <div class=”task-title”>Client presentation</div> 
+                    <div class=”task-meta”> 
+                        <span>Tomorrow, 11:00 AM</span> 
+                        <span class=”priority high”>High</span> 
+                    </div> 
+                </div> 
+                <div class=”task-item completed”> 
+                    <div class=”task-title”>Morning exercise</div> 
+                    <div class=”task-meta”> 
+                        <span>Completed</span> 
+                        <span class=”priority low”>Low</span> 
+                    </div> 
+                </div> 
+                <div class=”task-item upcoming”> 
+                    <div class=”task-title”>Team lunch</div> 
+                    <div class=”task-meta”> 
+                        <span>Friday, 01:00 PM</span> 
+                        <span class=”priority low”>Low</span> 
+                    </div> 
+     <!—Notification → 
+        <div class=”notification” id=”notification”> 
+            <div class=”notification-icon”> 
+                <I class=”fas fa-bell”></i> 
+ 
+ 
+            </div> 
+            <div class=”notification-content”> 
+                <h4>Task Reminder</h4> 
+                <p>Design meeting with team starts in 15 minutes</p> 
+            </div> 
+        </div> 
+         
+        <!—Navigation Bar → 
+        <div class=”nav-bar”> 
+            <div class=”nav-item active” data-screen=”dashboard-screen”> 
+                <I class=”fas fa-home”></i> 
+                <span>Dashboard</span> 
+            </div> 
+            <div class=”nav-item” data-screen=”task-list-screen”> 
+                <I class=”fas fa-list”></i> 
+                <span>Tasks</span> 
+            </div> 
+            <div class=”nav-item” data-screen=”create-task-screen”> 
+                <I class=”fas fa-plus-circle”></i> 
+                <span>Create</span> 
+            </div> 
+            <div class=”nav-item” id=”show-notification”> 
+                <I class=”fas fa-bell”></i> 
+                <span>Reminders</span> 
+            </div> 
+        </div> 
+ 
+ 
+         
+        <!—Deployed App Screen → 
+        <div class=”screen” id=”deployed-screen”> 
+            <div class=”deployed-container”> 
+                <div class=”deployed-icon”> 
+                    <I class=”fas fa-rocket”></i> 
+                </div> 
+                <h1 class=”deployed-title”>TaskFlow is Live!</h1> 
+                <p class=”deployed-subtitle”>Your task management app is successfully deployed 
+and ready to use.</p> 
+                <div class=”dashboard-stats”> 
+                    <div class=”stat-card”> 
+                        <h3>Active Users</h3> 
+                        <div class=”number”>1.2K</div> 
+                    </div> 
+                    <div class=”stat-card”> 
+                        <h3>Tasks Created</h3> 
+                        <div class=”number”>15.7K</div> 
+                    </div> 
+                </div> 
+                <div class=”store-badges”> 
+                    <div class=”store-badge”>App Store</div> 
+                    <div class=”store-badge”>Google Play</div> 
+                </div> 
+            </div> 
+        </div> 
+ 
+ 
+    </div> 
+ 
+    <script> 
+        // Navigation functionality 
+        Document.querySelectorAll(‘.nav-item’).forEach(item => { 
+            Item.addEventListener(‘click’, function() { 
+                // Remove active class from all nav items 
+                Document.querySelectorAll(‘.nav-item’).forEach(nav => { 
+                    Nav.classList.remove(‘active’); 
+                }); 
+                 
+                // Add active class to clicked nav item 
+                This.classList.add(‘active’); 
+                 
+                // Hide all screens 
+                Document.querySelectorAll(‘.screen’).forEach(screen => { 
+                    Screen.classList.remove(‘active’); 
+                }); 
+                 
+                // Show the selected screen 
+                Const screenId = this.getAttribute(‘data-screen’); 
+                Document.getElementById(screenId).classList.add(‘active’); 
+            }); 
+        }); 
+         
+        // Login functionality 
+ 
+ 
+        Document.getElementById(‘login-btn’).addEventListener(‘click’, function() { 
+            // Hide login screen 
+            Document.getElementById(‘login-screen’).classList.remove(‘active’); 
+             
+            // Show dashboard screen 
+            Document.getElementById(‘dashboard-screen’).classList.add(‘active’); 
+             
+            // Show notification after a delay 
+            setTimeout(() => { 
+                document.getElementById(‘notification’).style.display = ‘flex’; 
+                 
+                // Hide notification after 5 seconds 
+                setTimeout(() => { 
+                    document.getElementById(‘notification’).style.display = ‘none’; 
+                }, 5000); 
+            }, 1000); 
+        }); 
+         
+        // Show notification when reminder icon is clicked 
+        Document.getElementById(‘show-notification’).addEventListener(‘click’, function() { 
+            Document.getElementById(‘notification’).style.display = ‘flex’; 
+             
+            // Hide notification after 5 seconds 
+            setTimeout(() => { 
+                document.getElementById(‘notification’).style.display = ‘none’; 
+            }, 5000); 
+ 
+ 
+        }); 
+         
+        // Category selection 
+        Document.querySelectorAll(‘.category-tag’).forEach(tag => { 
+            Tag.addEventListener(‘click’, function() { 
+                Document.querySelectorAll(‘.category-tag’).forEach(t => { 
+                    t.classList.remove(‘selected’); 
+                }); 
+                This.classList.add(‘selected’); 
+            }); 
+        }); 
+         
+        // Priority selection 
+        Document.querySelectorAll(‘.priority-selector’).forEach(selector => { 
+            Selector.addEventListener(‘click’, function() { 
+                Document.querySelectorAll(‘.priority-selector’).forEach(s => { 
+                    s.classList.remove(‘selected’); 
+                }); 
+                This.classList.add(‘selected’); 
+            }); 
+        }); 
+         
+        // Filter options 
+        Document.querySelectorAll(‘.filter-option’).forEach(option => { 
+            Option.addEventListener(‘click’, function() { 
+                Document.querySelectorAll(‘.filter-option’).forEach(o => { 
+ 
+ 
+                    o.classList.remove(‘active’); 
+                }); 
+                This.classList.add(‘active’); 
+            }); 
+        }); 
+         
+        // Simulate deployed app screen (accessible via URL parameter) 
+        Const urlParams = new URLSearchParams(window.location.search); 
+        If (urlParams.get(‘screen’) === ‘deployed’) { 
+            Document.getElementById(‘login-screen’).classList.remove(‘active’); 
+            Document.getElementById(‘deployed-screen’).classList.add(‘active’); 
+        } 
+    </script> 
+</body> 
+</html> 
